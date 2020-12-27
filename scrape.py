@@ -7,14 +7,20 @@ import time
 consumer_key = "XXKRh8ZS63kd0vIWCZoiUgch6"
 consumer_secret = "SH6hEXxGiBTTZHVFfFb1Ojm9EcyWWpvBNfC4ymGizXzFXhDzgO"
 
-access_token = "2808799227-WwG5jpEe6Z4UdmGEnfA4ZKjUZpsMRYhO7wJikhg"
-access_token_secret = "k5aCm7qEm9KUrhg2kFYjIFNl7JYw04pRTfttAWwEh2QDA"
+access_token = "2808799227-7tN8fkkdfmWRwz9SdbQbw5HLif9b8Ghsxve1leP"
+access_token_secret = "bwqV0Z1QFeXFncpkF5uqKlfyo6kW2HiQIPeu4iXMTLIy3"
 
 #authentication and creating api
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
 
 api = tweepy.API(auth)
+
+try:
+    api.verify_credentials()
+    print("Authentication OK")
+except:
+    print("Error during authentication")
 
 # creating list to store tweets 
 data = []
@@ -26,7 +32,7 @@ class MyStreamListener(tweepy.StreamListener):
 		super().__init__()
 
 	def on_status(self, status):
-		if (len(data) >= 1000):
+		if (len(data) >= 100):
 			print("Max number of tweets reached!")
 			return False
 		if (time.time() - self.start_time) < self.limit:
@@ -34,6 +40,12 @@ class MyStreamListener(tweepy.StreamListener):
 			print("Number of tweets: " +str(len(data)))
 			return True
 		else:
+			return False
+
+	def on_error(self, status_code):
+		print("Error")
+		print(status_code)
+		if status_code == 420:
 			return False
 
 
